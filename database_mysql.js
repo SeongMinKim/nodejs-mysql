@@ -63,7 +63,7 @@ conn.query(sql, function(err, rows, fields){
 });
 */
 
-//쿼리를 넘기는 방법 밑 콜백 함수에 대한것
+//쿼리를 넘기는 방법 및 콜백 함수에 대한것
 /*conn.query(sql, function(err, rows, fields){
     if(err){
         console.log(err);
