@@ -15,13 +15,13 @@ var conn = mysql.createConnection({
 //DB에 접속하기
 conn.connect();
 
-var sql = 'update topic set title=?, description=? where id=?';
-var params =['npm', 'leezche', '1'];
+var sql = 'delete from topic where id=?';
+var params =[1];
 conn.query(sql, params ,function(err, rows, fields){
     if (err){
         console.log(err);
     }else{
-        console.log(rows.insertId);
+        console.log(rows);
     }
 })
 
