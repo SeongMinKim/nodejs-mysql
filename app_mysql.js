@@ -57,6 +57,26 @@ app.get('/topic/add', function(req, res){
     // });
 });
 
+app.get('/topic/:id/edit', function(req, res){
+    var sql = 'select id, title from topic';
+    conn.query(sql, function(err, topics, fields){
+      var id = req.params.id;
+      if(id) {
+          var sql = 'select * from topic where id=?';
+          conn.query(sql,[id], function(err, topic, fields){
+              if (err) {
+                  console.log(err);
+                  res.status(500).send('Internal Serever Error');
+              } else {
+                  res.render('edit', {topics: topics, topic: topic[0]});
+              }
+          });
+      }else{
+          console.log('There is no id');
+          res.status(500).send('Internal Server Error');
+      }
+    });
+})
 
 app.get(['/topic', '/topic/:id'], function(req, res){
     var sql = 'select * from topic';
@@ -119,7 +139,6 @@ app.post('/topic/add', function(req, res){
             res.redirect('/topic/'+result.insertId);
         }
     });
-
     //});
 })
 

@@ -1,0 +1,27 @@
+doctype html
+html
+    head
+        meta(charset='utf-8')
+    body
+        h1
+            a(href='/topic') Server Side JavaScript
+        ul
+            each topic in topics
+                li
+                    a(href='/topic/'+topic.id)= topic.title
+        artcle
+            form(action='/topic/add' method='post')
+                p
+                    input(type='text' name='title' value=topic.title placeholder='title')
+                p
+                    textarea(name='description' value=topic.desscription placeholder='description')
+                p
+                    input(type='text' name='author' value=topic.author placeholder='author')
+                p
+                    input(type='submit' value='modify')
+
+
+            ul
+                    if topic
+                    li
+                        a(href='topic/' + topic.id+'/delete') delete
