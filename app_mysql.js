@@ -30,7 +30,7 @@ var app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.locals.pretty = true;
 app.use('/user', express.static('uploads'));
-app.set('views', './views_file');
+app.set('views', './views_mysql');
 app.set('view engine', 'jade');
 app.get('/upload', function(req, res){
     res.render('upload');
@@ -38,17 +38,42 @@ app.get('/upload', function(req, res){
 app.post('/upload', upload.single('userfile'), function(req, res){
     res.send('Uploaded : '+req.file.filename);
 });
-app.get('/topic/new', function(req, res){
-    fs.readdir('data', function(err, files){
-        if(err){
-            console.log(err);
-            res.status(500).send('Internal Server Error');
-        }
-        res.render('new', {topics:files});
+app.get('/topic/add', function(req, res){
+    var sql = 'select id, title from topic';
+    conn.query(sql, function(err, topics, fields){
+        res.render('add', {topics : topics});
     });
+    // fs.readdir('data', function(err, files){
+    //     if(err){
+    //         console.log(err);
+    //         res.status(500).send('Internal Server Error');
+    //     }
+    //     res.render('add', {topics:files});
+    // });
 });
+
+
 app.get(['/topic', '/topic/:id'], function(req, res){
-    //저장되어있는 파일을 목록으로 만들어 주기 이부분을 DB로 컨밴션해준다
+    var sql = 'select * from topic';
+    conn.query(sql, function(err, topics, fields){
+        var id = req.params.id;
+        if (id){
+            var sql = 'select * from topic where id=?';
+            conn.query(sql, [id], function(err, topic, fields){
+                if(err){
+                    console.log(err);
+                    res.status(500).send('Internal Server Error');
+                } else {
+                    res.render('view',{topics:topics, topic:topic[0]})
+                }
+            });
+
+        }else {
+            res.render('view', {topics: topics});
+        }
+    });
+    //저장되어있는 파일을 목록으로 만들어 주기 이부분을 DB로
+    /*
     fs.readdir('data', function(err, files){
         if(err){
             console.log(err);
@@ -69,7 +94,9 @@ app.get(['/topic', '/topic/:id'], function(req, res){
             res.render('view', {topics:files, title:'Welcome', description:'Hello, JavaScript for server.'});
         }
     })
+    */
 });
+
 app.post('/topic', function(req, res){
     var title = req.body.title;
     var description = req.body.description;
@@ -81,6 +108,6 @@ app.post('/topic', function(req, res){
         res.redirect('/topic/'+title);
     });
 })
-app.listen(3000, function(){
-    console.log('Connected, 3000 port!');
+app.listen(5000, function(){
+    console.log('Connected, 5000 port!');
 })
