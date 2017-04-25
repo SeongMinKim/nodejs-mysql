@@ -102,17 +102,32 @@ app.get(['/topic', '/topic/:id'], function(req, res){
     */
 });
 
-app.post('/topic', function(req, res){
+
+
+
+app.post('/topic/add', function(req, res){
     var title = req.body.title;
     var description = req.body.description;
-    fs.writeFile('data/'+title, description, function(err){
+    var author = req.body.author;
+    var sql = 'insert into topic (title,description, author) values(?,?,?)';
+    //fs.writeFile('data/'+title, description, function(err){
+    conn.query(sql, [title, description,author],function(err, result, fields){
         if(err){
             console.log(err);
             res.status(500).send('Internal Server Error');
+        }else{
+            res.redirect('/topic/'+result.insertId);
         }
-        res.redirect('/topic/'+title);
     });
+
+    //});
 })
+
+
+
+
+
+
 app.listen(5000, function(){
     console.log('Connected, 5000 port!');
 })
