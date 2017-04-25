@@ -41,7 +41,12 @@ app.post('/upload', upload.single('userfile'), function(req, res){
 app.get('/topic/add', function(req, res){
     var sql = 'select id, title from topic';
     conn.query(sql, function(err, topics, fields){
-        res.render('add', {topics : topics});
+        if(err){
+            console.log(err);
+            res.status(500).send('Internal Server Error');
+        }else {
+            res.render('add', {topics: topics});
+        }
     });
     // fs.readdir('data', function(err, files){
     //     if(err){
