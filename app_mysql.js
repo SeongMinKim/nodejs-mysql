@@ -57,6 +57,14 @@ app.get('/topic/add', function(req, res){
     // });
 });
 
+
+//test 부분
+app.get('/',function(req,res){
+    res.send('hello');
+})
+
+
+//page 수정 기능
 app.get('/topic/:id/edit', function(req, res){
     var sql = 'select id, title from topic';
     conn.query(sql, function(err, topics, fields){
@@ -78,6 +86,8 @@ app.get('/topic/:id/edit', function(req, res){
     });
 })
 
+
+//수정하는것 post로 넘겨받기
 app.post(['/topic/:id/edit'], function(req, res){
     var title = req.body.title;
     var description= req.body.description;
@@ -96,7 +106,7 @@ app.post(['/topic/:id/edit'], function(req, res){
 
 
 
-
+// 글 뿌려주기
 app.get(['/topic', '/topic/:id'], function(req, res){
     var sql = 'select * from topic';
     conn.query(sql, function(err, topics, fields){
@@ -143,7 +153,7 @@ app.get(['/topic', '/topic/:id'], function(req, res){
 
 
 
-
+//글 추가 부분
 app.post('/topic/add', function(req, res){
     var title = req.body.title;
     var description = req.body.description;
@@ -161,9 +171,37 @@ app.post('/topic/add', function(req, res){
     //});
 })
 
+//삭제 하는 부분
+app.get('/topic/:id/delete',function(req, res) {
+    var sql = 'select id,title from topic';
+    var id = req.params.id;
+    conn.query(sql, function (err, topics, fields) {
+        var sql = 'select * from topic where id=?';
+        conn.query(sql, [id], function (err, topic) {
+            if (err) {
+                console.log(err);
+                res.status(500).send('Internal Server Error');
+            } else {
+                if(topic.length===0){
+                    console.log('there is no values');
+                    res.status(500).send('Internal Server Error');
+                }else{
+                    res.render('delete',{topics:topics, topic:topic[0]});
+                }
+            }
 
+        });
+    });
+});
 
-
+//delete 부분 한번더 묻는거 받기
+app.post('/topic/:id/delete', function(req,res){
+    var id = req.params.id;
+    var sql = 'delete from topic where id=?';
+    conn.query(sql,[id],function(err, result){
+        res.redirect('/topic/');
+    });
+});
 
 
 app.listen(5000, function(){
