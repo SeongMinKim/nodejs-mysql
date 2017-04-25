@@ -78,6 +78,25 @@ app.get('/topic/:id/edit', function(req, res){
     });
 })
 
+app.post(['/topic/:id/edit'], function(req, res){
+    var title = req.body.title;
+    var description= req.body.description;
+    var author =req.body.author;
+    var id = req.params.id;
+    var sql = 'update topic set title=?, description=?, author=? where id=?'
+    conn.query(sql,[title, description, author ,id], function(err , result, fields){
+        if(err){
+            console.log(err);
+            res.status(500).send('Internal Server Error');
+        }else{
+            res.redirect('/topic/'+id)
+        }
+    });
+});
+
+
+
+
 app.get(['/topic', '/topic/:id'], function(req, res){
     var sql = 'select * from topic';
     conn.query(sql, function(err, topics, fields){
