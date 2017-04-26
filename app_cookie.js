@@ -6,6 +6,25 @@ var app = express();
 app.use(cookieParser());
 
 
+var products={
+    1:{title: ' The history of web1'},
+    2:{title: ' The next Web'}
+};
+
+
+app.get('/products', function(req,res){
+    for(var name in products){
+        console.log(products[name]);
+    }
+    res.send('Products');
+})
+
+
+
+
+
+
+//쿠키 카운팅
 app.get('/count', function(req,res){
     if(req.cookies.count){ //쿠키가 있다면
         var count = parseInt(req.cookies.count)
